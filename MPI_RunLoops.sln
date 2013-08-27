@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+# Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MPI_RunLoops", "MPI_RunLoops\MPI_RunLoops.vcxproj", "{3EC8087A-9B51-45C1-A600-35FB35E0C404}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MPI_RunLoopsScatter", "MPI_RunLoopsScatter\MPI_RunLoopsScatter.vcxproj", "{BF1431FE-32B6-483A-A830-2A68B9273CC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +15,10 @@ Global
 		{3EC8087A-9B51-45C1-A600-35FB35E0C404}.Debug|Win32.Build.0 = Debug|Win32
 		{3EC8087A-9B51-45C1-A600-35FB35E0C404}.Release|Win32.ActiveCfg = Release|Win32
 		{3EC8087A-9B51-45C1-A600-35FB35E0C404}.Release|Win32.Build.0 = Release|Win32
+		{BF1431FE-32B6-483A-A830-2A68B9273CC0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BF1431FE-32B6-483A-A830-2A68B9273CC0}.Debug|Win32.Build.0 = Debug|Win32
+		{BF1431FE-32B6-483A-A830-2A68B9273CC0}.Release|Win32.ActiveCfg = Release|Win32
+		{BF1431FE-32B6-483A-A830-2A68B9273CC0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
