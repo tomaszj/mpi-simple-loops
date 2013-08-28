@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
         cout << "--- Operation took " << (double)(toc - tic) / CLOCKS_PER_SEC << " seconds ---" << endl;
         system("pause");
     }
-	return 0;
+    return 0;
 }
 
 void main_process(int world_size)
@@ -63,7 +63,7 @@ void main_process(int world_size)
     {
         MPI_Send(&sent_work_count, 1, MPI_INT, i, TASK_TAG, MPI_COMM_WORLD); 
         cout << "[Manager] Sent work #" << sent_work_count << " to #" << i << endl;
-            
+
         sent_work_count++;
     }
 
