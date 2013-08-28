@@ -1,5 +1,6 @@
-// MPI_RunLoops.cpp : Defines the entry point for the console application.
+// MPI_RunLoopsScatter.cpp
 //
+// by Tomasz Janeczko (2013)
 
 #include "stdafx.h"
 #include <cassert>
@@ -13,8 +14,13 @@ using namespace std;
 int process_loops(int loops);
 void perform_process(int total_iterations, int current_rank, int world_size);
 
+// Main entry point to the program. Passing an argument
+//
+// Specifying a number argument allows to control number of iterations done in the program
+// $1 - number of iteration to be performed
 int main(int argc, char* argv[])
 {
+	// Determine the number of iterations to be done using user input
 	int total_iterations = 0;
  
 	if (argc == 2)
@@ -22,11 +28,13 @@ int main(int argc, char* argv[])
 		char *input = argv[1];
 		total_iterations = strtol(input, NULL, 10);
 	}
-	else
+	
+	if (total_iterations == 0)
 	{
 		total_iterations = DEFAULT_ITERATIONS_COUNT;
 	}
 
+	// Initialize MPI and basic variables
 	MPI_Init(&argc, &argv);
 
 	double tic = MPI_Wtime();
@@ -37,8 +45,10 @@ int main(int argc, char* argv[])
     int current_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
 
+	// Run the main process
 	perform_process(total_iterations, current_rank, world_size);
 
+	// Finish and produce summary
 	double toc = MPI_Wtime();
     MPI_Finalize();
 
@@ -47,12 +57,13 @@ int main(int argc, char* argv[])
         cout << "--- Operation took " << (toc - tic) << " seconds ---" << endl;
         system("pause");
     }
+
 	return 0;
 }
 
 void perform_process(int total_iterations, int current_rank, int world_size)
 {
-    // Start of process
+    // Start of the process
 	cout << "[Node #" << current_rank << "] Starting process" << endl;
 
 	int *iterations_distribution = new int[world_size];
@@ -112,6 +123,7 @@ void perform_process(int total_iterations, int current_rank, int world_size)
 	delete[] received_loops;
 }
 
+// Loop execution
 int process_loops(int loops)
 {
     int i;
