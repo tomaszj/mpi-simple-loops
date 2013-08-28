@@ -14,7 +14,7 @@ using namespace std;
 int process_loops(int loops);
 void perform_process(int total_iterations, int current_rank, int world_size);
 
-// Main entry point to the program. Passing an argument
+// Main entry point to the program.
 //
 // Specifying a number argument allows to control number of iterations done in the program
 // $1 - number of iteration to be performed
