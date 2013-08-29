@@ -11,6 +11,11 @@ The best performance is shown when the number of nodes is equal to number of cor
 
     > mpiexec.exe -n 9 MPI_RunLoops.exe
     
+By default, this program distributes 1000 iterations of 10 million loops. You can specify the number of iterations yourself:
+
+    > mpiexec.exe -n 9 MPI_RunLoops.exe 30
+
+    
 ## MPI_RunLoopsScatter
 
 This program uses MPI_Scatter to distribute work and node #0 is also a worker here. The best performance is achieved when the number of nodes is equatl to number of cores. E.g.:
