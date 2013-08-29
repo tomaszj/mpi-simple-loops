@@ -11,8 +11,8 @@
 
 using namespace std;
 
-int process_loops(int loops);
-void perform_process(int total_iterations, int current_rank, int world_size);
+long long process_loops(long long loops);
+void perform_process(long total_iterations, int current_rank, int world_size);
 
 // Main entry point to the program.
 //
@@ -21,7 +21,7 @@ void perform_process(int total_iterations, int current_rank, int world_size);
 int main(int argc, char* argv[])
 {
     // Determine the number of iterations to be done using user input
-    int total_iterations = 0;
+    long total_iterations = 0;
 
     if (argc == 2)
     {
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void perform_process(int total_iterations, int current_rank, int world_size)
+void perform_process(long total_iterations, int current_rank, int world_size)
 {
     // Start of the process
     cout << "[Node #" << current_rank << "] Starting process" << endl;
@@ -97,7 +97,7 @@ void perform_process(int total_iterations, int current_rank, int world_size)
     for (int i = 0; i < iterations; i++)
     {
         int loops_to_perform = 10000000;
-        long result = process_loops(loops_to_perform);
+        long long result = process_loops(loops_to_perform);
         total_loops += result;
     }
 
@@ -124,9 +124,9 @@ void perform_process(int total_iterations, int current_rank, int world_size)
 }
 
 // Loop execution
-int process_loops(int loops)
+long long process_loops(long long loops)
 {
-    int i;
+    long long i;
     for (i = 0; i < loops; i++)
     {
         i++;

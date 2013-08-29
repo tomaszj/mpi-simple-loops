@@ -6,22 +6,40 @@
 #include <mpi.h>
 #include <time.h>
 
-#define LOOPS_COUNT 100
+#define DEFAULT_ITERATIONS_COUNT 1000
 #define TASK_TAG 1024
 #define DIE_TAG 666
 
 
 using namespace std;
 
-int process_loops(int loops);
-void main_process(int world_size);
+long long process_loops(long long loops);
+void main_process(int total_iterations, int world_size);
 void worker_process(int rank, int world_size);
 
+// Main entry point to the program.
+//
+// Specifying a number argument allows to control number of iterations done in the program
+// $1 - number of iteration to be performed
 int main(int argc, char* argv[])
 {
-    clock_t tic = clock();
+    // Determine the number of iterations to be done using user input
+    int total_iterations = 0;
 
+    if (argc == 2)
+    {
+        char *input = argv[1];
+        total_iterations = strtol(input, NULL, 10);
+    }
+
+    if (total_iterations == 0)
+    {
+        total_iterations = DEFAULT_ITERATIONS_COUNT;
+    }
+
+    // Initialize MPI
     MPI_Init(&argc, &argv);
+    double tic = MPI_Wtime();
 
     int world_size;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
@@ -29,27 +47,29 @@ int main(int argc, char* argv[])
     int current_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
 
+    // Run the process
     if (current_rank == 0)
     {
-        main_process(world_size);
+        main_process(total_iterations, world_size);
     }
     else
     {
         worker_process(current_rank, world_size);
     }
 
+    // Kill MPI environment
+    double toc = MPI_Wtime();
     MPI_Finalize();
-    clock_t toc = clock();
 
     if (current_rank == 0)
     {
-        cout << "--- Operation took " << (double)(toc - tic) / CLOCKS_PER_SEC << " seconds ---" << endl;
+        cout << "--- Operation took " << toc - tic << " seconds ---" << endl;
         system("pause");
     }
     return 0;
 }
 
-void main_process(int world_size)
+void main_process(int total_iterations, int world_size)
 {
     // Coordinator process
     cout << "[Manager] Starting coordinator process" << endl;
@@ -62,13 +82,13 @@ void main_process(int world_size)
     for (int i = 1; i < world_size; i++)
     {
         MPI_Send(&sent_work_count, 1, MPI_INT, i, TASK_TAG, MPI_COMM_WORLD); 
-        cout << "[Manager] Sent work #" << sent_work_count << " to #" << i << endl;
+        //cout << "[Manager] Sent work #" << sent_work_count << " to #" << i << endl;
 
         sent_work_count++;
     }
 
     // Wait for incoming responses and deal remaining work
-    while (received_work_count < LOOPS_COUNT)
+    while (received_work_count < total_iterations)
     {
         long processed_loops;
         MPI_Status status;
@@ -77,12 +97,12 @@ void main_process(int world_size)
         received_work_count++;
         total_processed_loops += processed_loops;
 
-        cout << "[Manager] " << processed_loops << " loops from worker #" << status.MPI_SOURCE << endl;
+        //cout << "[Manager] " << processed_loops << " loops from worker #" << status.MPI_SOURCE << endl;
 
-        if (sent_work_count < LOOPS_COUNT)
+        if (sent_work_count < total_iterations)
         {
             MPI_Send(&sent_work_count, 1, MPI_INT, status.MPI_SOURCE, TASK_TAG, MPI_COMM_WORLD);
-            cout << "[Manager] Sent work #" << sent_work_count << " to #" << status.MPI_SOURCE << endl;
+            //cout << "[Manager] Sent work #" << sent_work_count << " to #" << status.MPI_SOURCE << endl;
 
             sent_work_count++;
         }
@@ -112,12 +132,12 @@ void worker_process(int rank, int world_size)
         if (status.MPI_TAG == TASK_TAG)
         {
             int current_loop_id = (int)received_data;
-            cout << "[Worker #" << rank << "] Received work #" << current_loop_id << endl;
-            int loops_to_perform = current_loop_id * 5000000;
-            long result = process_loops(loops_to_perform);
+            //cout << "[Worker #" << rank << "] Received work #" << current_loop_id << endl;
+            int loops_to_perform = 10000000;
+            long long result = process_loops(loops_to_perform);
 
             MPI_Send(&result, 1, MPI_LONG, 0, TASK_TAG, MPI_COMM_WORLD);
-            cout << "[Worker #" << rank << "] Sent " << result << " loops as work #" << current_loop_id << endl;
+            //cout << "[Worker #" << rank << "] Sent " << result << " loops as work #" << current_loop_id << endl;
         }
         else if (status.MPI_TAG == DIE_TAG)
         {
@@ -132,9 +152,9 @@ void worker_process(int rank, int world_size)
     }
 }
 
-int process_loops(int loops)
+long long process_loops(long long loops)
 {
-    int i;
+    long long i;
     for (i = 0; i < loops; i++)
     {
         i++;
